@@ -1,10 +1,17 @@
 import sys
 from itertools import combinations
 N = int(sys.stdin.readline())
-stat = [list(map(int, sys.stdin.readline().split())) for _ in range(N)]
-sum_stat = [sum(i) + sum(j) for i, j in zip(stat, zip(*stat))] # 대각선끼리 합
-allstat = sum(sum_stat) // 2 # 모든 값 합의 절반
-result = float('inf')
-for l in combinations(sum_stat, N//2): # 대각선 합에서 뽑은 2개 중에서
-    result = min(result, abs(allstat - sum(l))) # 모든 값의 절반 - 그 뽑은 2개 합의 차 = start팀 - link팀
-print(result)
+S_list = [list(map(int, sys.stdin.readline().split())) for _ in range(N)]
+cnt = 0
+answer = 1e9
+for com in combinations([i for i in range(N)], int(N/2)):
+    #if cnt == int((N*(N-1))/4) : break
+    score1, score2 = 0,0
+    for p1, p2 in combinations(com, 2):
+        score1 += (S_list[p1][p2]+S_list[p2][p1])
+    p2_list = list(set([i for i in range(N)]) - set(com))
+    for p1, p2 in combinations(p2_list, 2):
+        score2 += (S_list[p1][p2]+S_list[p2][p1])
+    answer = min(answer, abs(score1-score2))
+    #cnt += 1
+print(answer)
