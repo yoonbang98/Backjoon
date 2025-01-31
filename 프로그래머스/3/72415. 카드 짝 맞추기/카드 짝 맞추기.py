@@ -27,18 +27,11 @@ def get_key_count(board, cy, cx, ty, tx):
                 visited[ny][nx] = visited[y][x] + 1
                 que.append((ny, nx))
 
-
-# # test
-# board = [[1,0,0,3],[0,0,0,0],[0,0,0,2],[3,0,1,0]]
-# print(get_key_count(board, 0, 3, 0 ,3))
-
 def get_coord_by_num(board, target):
     for i in range(4):
         for j in range(4):
             if board[i][j] == target:
                 return i, j
-
-answer = inf
 
 def is_end(board):
     for i in range(4):
@@ -69,6 +62,8 @@ def dfs(board, r, c, ty1, tx1, cnt):
                 dfs(board, ty2, tx2, i, j, cnt)
 
 def solution(board, r, c):
+    global answer
+    answer = inf
     for i in range(4):
         for j in range(4):
             if board[i][j] != 0:
