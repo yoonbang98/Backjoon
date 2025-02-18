@@ -15,7 +15,7 @@ def solution(n, edge):
             if dist[nei] == -1:
                 dist[nei] = d + 1
                 queue.append([nei, d+1])
-            elif dist[nei] > d + 1:
-                dist[nei] = d + 1
-                queue.append([nei, d+1])
+            # elif dist[nei] > d + 1:
+            #     dist[nei] = d + 1
+            #     queue.append([nei, d+1])
     return dist.count(max(dist))
