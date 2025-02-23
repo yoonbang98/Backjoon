@@ -1,20 +1,33 @@
-from collections import deque
-def solution(numbers, target):
-    answer = 0
+
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+answer = 0
+def DFS(idx, numbers, target, value):
+    global answer
     N = len(numbers)
-    idx = 0
-    queue = deque()
-    queue.append([numbers[idx], idx])
-    queue.append([-1*numbers[idx], idx])
-    while queue:
-        num, cur_idx = queue.popleft()
-        if cur_idx == N-1 :
-            if num == target:
-                answer += 1
-        else:
-            next_idx = cur_idx + 1
-            queue.append([num+numbers[next_idx], next_idx])
-            queue.append([num-numbers[next_idx], next_idx])
-        
-    
+    if(idx== N and target == value):
+        answer += 1
+        return
+    if(idx == N):
+        return
+
+    DFS(idx+1,numbers,target,value+numbers[idx])
+    DFS(idx+1,numbers,target,value-numbers[idx])
+def solution(numbers, target):
+    global answer
+    DFS(0,numbers,target,0)
     return answer
