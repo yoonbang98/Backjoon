@@ -1,14 +1,20 @@
-from math import sqrt
+import math
 N = int(input())
+primes = [True for i in range(N+1)]
+
+for i in range(2, int(math.sqrt(N))+1):
+    if primes[i] == True:
+        j = 2
+        while i*j <= N:
+            primes[i*j] = False
+            j += 1
+
 prime_list = []
-def is_prime(n):
-    for num in range(2, int(sqrt(n)) + 1):
-        if n%num == 0:
-            return False
-    return True
-for n in range(2, N+1):
-    if is_prime(n):
-        prime_list.append(n)
+
+for i in range(2, N+1):
+    if primes[i]:
+        prime_list.append(i)
+
 M = len(prime_list)
 start, end = 0, 0
 answer = 0
@@ -27,4 +33,3 @@ else:
             sum_tmp -= prime_list[start]
             start += 1
     print(answer)
-
