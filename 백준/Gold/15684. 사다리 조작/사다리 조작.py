@@ -1,69 +1,47 @@
 import sys
-input = sys.stdin.readline
 
-n, m, h = map(int, input().split())
+N, M, H = map(int, sys.stdin.readline().split())
+sadari = [[0] * (N-1) for _ in range(H)]
 
-data = [[False]*(n+1) for _ in range(h+1)]
+# 사다리 입력 받기
+for _ in range(M):
+    a, b = map(int, sys.stdin.readline().split())
+    sadari[a-1][b-1] = 1  # 가로선 표시
 
-
-#데이터 입력받기
-for _ in range(m):
-    x,y = map(int,input().split())
-    data[x][y] = True
-    
-    
-
-#현재 그래프 상태에서 조건을 만족하는지 판단.    
-def check(data):
-    for i in range(1,n):
-        my_num = i
-        for j in range(1,h+1):
-            #내려가던중 오른쪽으로 선있으면 숫자 +1
-            if data[j][my_num]:
-                my_num += 1
-            #내려가던중 왼쪽에 선있으면 숫자 -1
-            elif data[j][my_num-1]:
-                my_num -= 1
-            
-        if my_num != i:
+def sadari_game():
+    """현재 사다리에서 모든 출발점이 자기 번호로 도착하는지 확인"""
+    for start in range(N):
+        cur = start
+        for h in range(H):
+            if cur < N-1 and sadari[h][cur] == 1:  # 오른쪽으로 이동
+                cur += 1
+            elif cur > 0 and sadari[h][cur-1] == 1:  # 왼쪽으로 이동
+                cur -= 1
+        if cur != start:  # 자기 번호로 도착하지 못하면 실패
             return False
-        
     return True
 
-result = 4
-#전체 탐색을 위한 재귀 함수
-def dfs(depth, data, x,y):
-    global result
-    if depth >= result:
+def dfs(cnt, x, y):
+    global answer
+    if cnt >= answer:  # 가지치기 (이미 찾은 최소 개수보다 많다면 중단)
         return
-    
-    #주어진 사다리가 조건을 충족하면 결과 갱신
-    if check(data):
-        result = min(result, depth)
+    if sadari_game():  # 현재 사다리가 조건을 만족하면 최소 개수 갱신
+        answer = min(answer, cnt)
         return
-    
-    if depth == 3:
+    if cnt == 3:  # 3개 이상 추가하면 무조건 종료
         return
-  
-    #현재 깊이에서 안되면 다음 깊이 탐색                
-    for i in range(x,h+1):
-        ########################
-        if x == i:
-            k = y
-        else:
-            k = 0
-        ########################
-        for j in range(k,n):
-            if data[i][j] == False and data[i][j+1] == False and data[i][j-1] == False:
-                data[i][j] = True
-                #방금 추가해준 사다리 위치를 기억하고 그다음 사다리부터 추가되도록 작성
-                #추가된 좌표를 하나의 값으로 바꿔서 다다음 함수로 보냄
-                dfs(depth+1,data, i ,j+2)
-                data[i][j] = False
-                    
-    
-dfs(0,data,1,1)
-if result == 4:
-    result = -1
-    
-print(result)
+
+    # 가로선 추가 시도 (위에서 아래로, 왼쪽에서 오른쪽으로 탐색)
+    for i in range(x, H):
+        for j in range(y if i == x else 0, N-1):  # 같은 줄에서는 y 이후부터 탐색
+            if sadari[i][j] == 0 and (j == 0 or sadari[i][j-1] == 0) and (j == N-2 or sadari[i][j+1] == 0):
+                sadari[i][j] = 1  # 가로선 추가
+                dfs(cnt + 1, i, j + 2)  # 연속 가로선 방지: 다음 탐색은 j+2부터
+                sadari[i][j] = 0  # 원상 복구
+
+answer = 4  # 최대로 놓을 수 있는 가로선 개수는 3개
+if sadari_game():
+    print(0)
+else:
+    dfs(0, 0, 0)
+    print(answer if answer < 4 else -1)
