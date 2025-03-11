@@ -11,5 +11,5 @@ def solution(cap, n, deliveries, pickups):
             delivery -= cap #배달 카운트 - 트럭 용적량
             pickup -= cap #수거 카운트 - 트럭 용적량
             answer += (i+1) * 2 #거리 계산
-    
+
     return answer
