@@ -1,16 +1,24 @@
 def solution(n, tops):
-    MOD = 10007
-    a = [0] * (n + 1)
-    b = [0] * (n + 1)
-    a[0] = 0
-    b[0] = 1
+    dp = []
+    for i in range(2*n + 1):
+        dp.append([0]*3)
+    dp[0][0] = 1
+    dp[0][1] = 1
+    for i in range(2*n+1):
+        if not i :
+            continue
+        if i%2 == 1 : #윗변
+            dp[i][1] = (dp[i-1][0]+dp[i-1][2])%10007 
+            if tops[i//2]: #위에 놓여져 있는 경우
+                dp[i][0] = (sum(dp[i-1]))%10007
+                dp[i][2] = (dp[i-1][0]+dp[i-1][2])%10007
+            else:
+                dp[i][0] = (dp[i-1][0]+dp[i-1][2])%10007
+                dp[i][2] = (dp[i-1][1])%10007
+        else : #아랫변
+            dp[i][0] = (dp[i-1][0]+dp[i-1][2])%10007 #작은 삼각형만 놓는 경우
+            dp[i][1] = (dp[i-1][0]+dp[i-1][2])%10007
+            dp[i][2] = (dp[i-1][1])%10007
 
-    for k in range(1, n + 1):
-        if tops[k - 1]:
-            a[k] = (a[k - 1] + b[k - 1]) % MOD
-            b[k] = (2 * a[k - 1] + 3 * b[k - 1]) % MOD
-        else:
-            a[k] = (a[k - 1] + b[k - 1]) % MOD
-            b[k] = (a[k - 1] + 2 * b[k - 1]) % MOD
 
-    return (a[n] + b[n]) % MOD
+    return (dp[-1][0] + dp[-1][2])%10007
