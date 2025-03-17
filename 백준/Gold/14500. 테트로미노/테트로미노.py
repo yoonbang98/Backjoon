@@ -1,42 +1,38 @@
 import sys
-input = sys.stdin.readline
-sys.setrecursionlimit(10**5)
-N, M = map(int, input().split())
-
-field = [list(map(int, input().split())) for _ in range(N)]
-
-answer = 0
-
+sys.setrecursionlimit(10**7)
+N, M = map(int, sys.stdin.readline().split())
+field = []
+for _ in range(N):
+    field.append(list(map(int, sys.stdin.readline().split())))
 dir = [(1,0),(0,1),(-1,0),(0,-1)]
-def dfs(r, c, route):
+def dfs(i , j ,result, cnt):
     global answer
-    if len(route) == 4:
-        result = 0
-        for rr, cc in route:
-            result += field[rr][cc]
+    if cnt == 4:
         answer = max(answer, result)
         return
-
     for dr, dc in dir:
-        nr, nc = r + dr, c + dc
-        if 0 <= nr < N and 0 <= nc < M and [nr, nc] not in route:
-            route_next = route + [[nr, nc]]
-            dfs(nr, nc, route_next)
+        nr, nc = i + dr, j + dc
+        if 0 <= nr < N and 0 <= nc < M and not visited[nr][nc]:
+            visited[nr][nc] = True
+            dfs(nr,nc,result + field[nr][nc], cnt + 1)
+            visited[nr][nc] = False
     return
-for sr in range(N):
-    for sc in range(M):
-        route = [[sr, sc]]
-        dfs(sr, sc, route)
-        if 1 <= sc < M -1 and 1 <= sr:
-            tmp = field[sr][sc] + field[sr][sc-1] + field[sr][sc + 1] + field[sr-1][sc]
-            answer = max(answer, tmp)
-        if 1 <= sc < M -1 and sr < N - 1:
-            tmp = field[sr][sc] + field[sr][sc-1] + field[sr][sc + 1] + field[sr+1][sc]
-            answer = max(answer, tmp)
-        if 1 <= sr < N -1 and 1 <= sc:
-            tmp = field[sr][sc] + field[sr-1][sc] + field[sr+1][sc] + field[sr][sc-1]
-            answer = max(answer, tmp)
-        if 1 <= sr < N -1 and sc < M - 1:
-            tmp = field[sr][sc] + field[sr-1][sc] + field[sr+1][sc] + field[sr][sc+1]
-            answer = max(answer, tmp)
+
+answer = 0
+visited = [[False]*M for _ in range(N)]
+for i in range(N):
+    for j in range(M):
+        visited[i][j] = 1
+        dfs(i,j,field[i][j],1)
+        visited[i][j] = 0
+        if j+2 < M: # 가로로 놓을 수 있으면
+            if i-1 >= 0: # 위
+                answer = max(answer, field[i][j] + field[i][j+1] + field[i][j+2] + field[i-1][j+1])
+            if i+1 < N : #아래
+                answer = max(answer, field[i][j] + field[i][j+1] + field[i][j+2] + field[i+1][j+1])
+        if i+2 < N : #세로로 놓을 수 있으면
+            if j-1 >= 0: # 왼쪽
+                answer = max(answer, field[i][j] + field[i+1][j] + field[i+2][j] + field[i+1][j-1])
+            if j+1 < M : #오른쪽
+                answer = max(answer, field[i][j] + field[i+1][j] + field[i+2][j] + field[i+1][j+1])
 print(answer)
