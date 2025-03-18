@@ -1,29 +1,34 @@
+from collections import deque
+
 def solution(n, path, order):
-    answer = True
-    graph = [[] for _ in range(n+1)]
+    answer = False
+    graph = [[] for _ in range(n)]
     for src, dst in path:
         graph[src].append(dst)
         graph[dst].append(src)
-    orders = [0]*n
-    for pre, nxt in order:
-        orders[nxt] = pre
-    visited = [0]*n
-    queue = [0]
-    num_visit = 0
-    
+    not_yet = [False]*n
+    for src, dst in order:
+        not_yet[dst] = src
+    visited = [False]*n
+    visited[0] = True
+    queue = deque()
+    queue.append(0)
     after = {}
-    while queue :
-        cur = queue.pop()
-        if orders[cur] and not visited[orders[cur]]:
-            after[orders[cur]] = cur
+    num_visit = 0
+    while queue:
+        cur = queue.popleft()
+        prev = not_yet[cur]
+        if prev and not visited[prev]:
+            after[prev] = cur
             continue
-        visited[cur] = 1
         num_visit += 1
-        
         for nei in graph[cur]:
             if not visited[nei]:
+                visited[nei] = True
                 queue.append(nei)
         if cur in after:
+            visited[after[cur]] = True
             queue.append(after[cur])
-
-    return n == num_visit
+    if num_visit == n:
+        answer = True
+    return answer
