@@ -1,31 +1,24 @@
-from bisect import bisect_left, bisect_right
-def count_idx(a, left_value, right_value):
-    left_idx = bisect_left(a, left_value)
-    right_idx = bisect_right(a, right_value)
-    return right_idx - left_idx
+import bisect
 def solution(words, queries):
+    new_words = []
+    new_r_words = []
+    for word in words:
+        new_words.append([len(word), word])
+        new_r_words.append([len(word), word[::-1]])
+    new_words.sort()
+    new_r_words.sort()
     answer = []
-    word = [[] for _ in range(10001)]
-    word_rev = [[] for _ in range(10001)]
-    
-    for w in words:
-        word[len(w)].append(w)
-        word_rev[len(w)].append(w[::-1])
-    for i in range(10001):
-        word[i].sort()
-        word_rev[i].sort()
-        
-    for query in queries:
-        query_a = query.replace("?","a")
-        query_z = query.replace("?","z")
-        if query[0] == '?': #앞에 물음표
-            s = bisect_left(word_rev[len(query)],query_a[::-1])
-            e = bisect_right(word_rev[len(query)],query_z[::-1])
-            answer.append(e-s)
-        # ?가 접미사에 있는가?
+    for q in queries:
+        if q[0] != '?':
+            q_a = q.replace('?', 'a')
+            q_z = q.replace('?', 'z')
+            left_idx = bisect.bisect_left(new_words, [len(q),q_a])
+            right_idx = bisect.bisect_right(new_words, [len(q),q_z])
+            answer.append(right_idx - left_idx)
         else:
-            s = bisect_left(word[len(query)],query_a)
-            e = bisect_right(word[len(query)],query_z)
-            answer.append(e-s)
-            
+            q_a = q.replace('?', 'a')[::-1]
+            q_z = q.replace('?', 'z')[::-1]
+            left_idx = bisect.bisect_left(new_r_words, [len(q),q_a])
+            right_idx = bisect.bisect_right(new_r_words, [len(q),q_z])
+            answer.append(right_idx - left_idx)
     return answer
