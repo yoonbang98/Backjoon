@@ -1,25 +1,25 @@
-import math
+def time_to_mili_sec(hh, mm, ss, ms):
+    return int(ms) + int(ss)*1000 + int(mm)*60*1000 + int(hh)*60*60*1000
 def solution(lines):
-    answer = 0
-    if len(lines) == 1:
-        answer = 1
-        return answer
-    log = []
+    new_line = []
     for line in lines:
-        date,s,t = line.split()
-        s = s.split(':')
-        t = t.replace('s', '')
-        end = (int(s[0])*3600 + int(s[1])*60 + float(s[2]))*1000
-        start = end - float(t)*1000 + 1
-        
-        log.append([start, end])
-    #print(log)
-    for x in log:
-        answer = max(answer, throughput(log, x[0], x[0] + 1000), throughput(log, x[1], x[1] + 1000))
+        _, t, l = line.split()
+        ms = t[-3:]
+        t = t[:-4]
+        l = l[:-1]
+        hh, mm, ss = t.split(':')
+        mili_sec = time_to_mili_sec(hh,mm,ss, ms)
+        new_line.append([max(0,mili_sec-int(float(l)*1000) +1), mili_sec])
+    answer = 0
+    for s_ms, f_ms in new_line:
+        src1, dst1 = s_ms, s_ms + 999
+        src2, dst2 = f_ms, f_ms + 999
+        result1 = 0
+        result2 = 0
+        for src, dst in new_line:
+            if src <= dst1 and dst >= src1:
+                result1 += 1
+            if src <= dst2 and dst >= src2:
+                result2 += 1
+        answer = max(answer, result1, result2)
     return answer
-def throughput(log, start, end):
-    cnt = 0
-    for x in log:
-        if x[0] < end and x[1] >= start:
-            cnt += 1
-    return cnt
