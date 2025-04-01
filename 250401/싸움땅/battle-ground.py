@@ -72,7 +72,7 @@ for _ in range(K):
 
                                     break
                                 else:
-                                    d2 += 1
+                                    d2 = (d2 + 1)%4
                             cur_g = g
                             if max(field_gun[nr][nc]) > g:
                                 cur_g = max(field_gun[nr][nc])
@@ -102,7 +102,7 @@ for _ in range(K):
                                     field_warrior[nnr][nnc] = [m, d, s, g]
                                     break
                                 else:
-                                    d += 1
+                                    d = (d+1)%4
                             cur_g = g2
                             if max(field_gun[nr][nc]) > g2:
                                 cur_g = max(field_gun[nr][nc])
