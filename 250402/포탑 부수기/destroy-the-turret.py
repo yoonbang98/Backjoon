@@ -4,7 +4,6 @@ N, M, K = map(int, input().split())
 field = [list(map(int, input().split())) for _ in range(N)]
 field_attack = [[0]*M for _ in range(N)]
 
-t = 1
 def find_attacker(field):
     min_value, max_value = 5001, -1
     for i in range(N):
@@ -50,11 +49,12 @@ def p_attack(field, field_war, src_r, src_c, dst_r, dst_c):
             field_war[nr][nc] = True
             field[nr][nc] = max(0, field[nr][nc] - int(field[src_r][src_c]//2))
     return field, field_war
-for _ in range(K):
+
+for k in range(1, K+1):
     field_war = [[False]*M for _ in range(N)]
     src_r, src_c, dst_r, dst_c = find_attacker(field)
     field[src_r][src_c] += (N+M)
-    field_attack[src_r][src_c] = t
+    field_attack[src_r][src_c] = k
     field_war[src_r][src_c] = True
 
     route = l_attack(src_r, src_c, dst_r, dst_c)
@@ -68,6 +68,7 @@ for _ in range(K):
                 field[r][c] = max(0, field[r][c] - field[src_r][src_c])
             else:
                 field[r][c] = max(0, field[r][c] - int(field[src_r][src_c]//2))
+
     else: #포탄 공격
         field, field_war = p_attack(field, field_war, src_r, src_c, dst_r, dst_c)
     cnt = 0
