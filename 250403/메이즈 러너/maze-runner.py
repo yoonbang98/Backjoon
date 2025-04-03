@@ -1,5 +1,4 @@
 import sys
-import heapq
 input = sys.stdin.readline
 
 N, M, K = map(int, input().split())
@@ -30,29 +29,18 @@ def move(field_people, exit_r, exit_c):
                 if not nxt_cand:
                     new_field_people[r][c] = new_field_people[r][c] + field_people[r][c]
                 else:
-                    result += 1
+                    result += len(field_people[r][c])
                     nxt_cand.sort()
                     nr, nc = nxt_cand[0][2], nxt_cand[0][3]
                     if (nr, nc) != (exit_r, exit_c):
                         new_field_people[nr][nc] = new_field_people[nr][nc] + field_people[r][c]
     return new_field_people, result
 def square_info(field_people, exit_r, exit_c):
-    dist = [[-1]*N for _ in range(N)]
-    heap = []
-    heapq.heappush(heap, [0, exit_r, exit_c])
-    dist[exit_r][exit_c] = 0
-    min_dist = 0
-    while heap:
-        cur_dist, r, c = heapq.heappop(heap)
-        if field_people[r][c]:
-            min_dist = cur_dist
-            break
-        for dr, dc in dir:
-            nr, nc = r + dr, c + dc
-            if 0 > nr or nr >= N or 0 > nc or nc >= N: continue
-            if dist[nr][nc] == -1:
-                dist[nr][nc] = cur_dist + 1
-                heapq.heappush(heap, [cur_dist + 1, nr, nc])
+    min_dist = N
+    for i in range(N):
+        for j in range(N):
+            if field_people[i][j]:
+                min_dist = min(max(abs(i-exit_r), abs(j-exit_c)), min_dist)
     for i in range(N-min_dist):
         for j in range(N-min_dist):
             if i <= exit_r <= i + min_dist and j <= exit_c <= j + min_dist:
@@ -83,6 +71,13 @@ answer = 0
 for _ in range(K):
     field_people, result = move(field_people, exit_r, exit_c)
     answer += result
+    cnt = 0
+    for i in range(N):
+        for j in range(N):
+            if field_people[i][j]:
+                cnt += 1
+    if not cnt:
+        break
     l_r, l_c, l = square_info(field_people, exit_r, exit_c)
     field, field_people = turn(field, field_people, l_r, l_c, l)
     flag = False
@@ -94,12 +89,5 @@ for _ in range(K):
                 break
         if flag:
             break
-    cnt = 0
-    for i in range(N):
-        for j in range(N):
-            if field_people[i][j]:
-                cnt += 1
-    if not cnt:
-        break
 print(answer)
 print(exit_r+1, exit_c+1)
