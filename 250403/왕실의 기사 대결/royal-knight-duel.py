@@ -34,7 +34,7 @@ def move(num,d,field_knight, knight):
             for i in range(r, r+ h):
                 for j in range(c,c+w):
                     nr, nc = i + dir[d][0], j+dir[d][1]
-                    if 0 <= nr < L and 0 <= nr < L and field[nr][nc] != 2:
+                    if 0 <= nr < L and 0 <= nc < L and field[nr][nc] != 2:
                         if field_knight[nr][nc] and field_knight[nr][nc] != -(n+1):
                             nxt_knight_tmp.append(-field_knight[nr][nc]-1)
                     else:
@@ -48,6 +48,7 @@ for _ in range(Q):
 
     if alive[i-1]:
         result = move(i-1, d,field_knight, knight)
+        result = list(set(result))
         if not result:
             continue
         else:
