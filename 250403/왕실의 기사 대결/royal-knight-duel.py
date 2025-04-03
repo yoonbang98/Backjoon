@@ -79,8 +79,7 @@ for _ in range(Q):
                     for ii in range(nr, nr+h):
                         for jj in range(nc, nc+ w):
                             new_field_knight[ii][jj] = -(n)
-                knight[n] = [nr,nc,h,w,k] #좌상단
-
+                knight[n][0], knight[n][1] = nr,nc
             for num in range(1, N+1):
                 if alive[num] and num not in result:
                     r,c,h,w,k = knight[num]
@@ -94,4 +93,3 @@ for i in range(1,N+1):
     if alive[i]:
         answer += damage[i]
 print(answer)
-
