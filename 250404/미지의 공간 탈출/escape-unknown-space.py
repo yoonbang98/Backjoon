@@ -50,6 +50,7 @@ for i in range(5):
                     m_sr += idx
                     m_sc += idx2
             mountain[M+idx][M:2*M]= row[:]
+
 fire = []
 for _ in range(F):
     r, c, d, v = map(int, input().split())
@@ -91,7 +92,7 @@ def down_mountain(mountain, m_sr, m_sc, m_dst_r, m_dst_c):
                     nr, nc = -c + 3*M-1, -r+ 3*M-1
                 else:
                     nr, nc = c, r
-                if dist[nr][nc] == -1:
+                if not mountain[nr][nc] and dist[nr][nc] == -1:
                     dist[nr][nc] = cur_dist + 1
                     heapq.heappush(heap, [cur_dist + 1, nr, nc])
     return -1
