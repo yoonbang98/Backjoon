@@ -38,61 +38,37 @@ from collections import defaultdict
 T = int(input())
 # 여러개의 테스트 케이스가 주어지므로, 각각을 처리합니다.
 dir = [(-1,0),(1,0),(0,-1),(0,1)] #상하좌우
-next_d = {3 : [[2,0],[2,0],[1,1],[0,1],[2,0]], 1: [[3,1],[0,0],[0,0],[2,1],[0,0]], 0 : [[1,0],[3,1],[2,1],[1,0],[1,0]], 2 : [[0,1],[1,1],[3,0],[3,0],[3,0]]}
+next_d = {3 : [2,2,1,0,2], 1: [3,0,0,2,0], 0 : [1,3,2,1,1], 2 : [0,1,3,3,3]}
 def simulation(sr, sc, d):
     result = 0
     r, c, cur_d = sr, sc, d
     while True:
         nr, nc = r + dir[cur_d][0], c + dir[cur_d][1]
+        if (nr, nc) == (sr, sc):
+            return result
         if nr < 0 or nr >= N or nc < 0 or nc >= N: #벽
             result += 1
             if cur_d%2 == 0:
                 cur_d += 1
             else:
                 cur_d -= 1
-            if 1 <= field[r][c] <= 4: #블록
-                result += 1
-                cur_d, move_flag = next_d[cur_d][field[r][c] - 1]
-            elif 6 <= field[r][c] <= 10:
-                warm_loc = warm_hall[field[r][c]]
-                for wr, wc in warm_loc:
-                    if (wr, wc) != (r, c):
-                        nnr, nnc = wr, wc
-                r, c = nnr, nnc
-            else:
-                pass
-        else: #안
-            if not field[nr][nc]: # 빈칸일 때
-                r, c = nr, nc
-            else:
-                if 1 <= field[nr][nc] <= 5: #블록
-                    result += 1
-                    cur_d, move_flag = next_d[cur_d][field[nr][nc] - 1]
-                    if move_flag:
-                        r, c = nr, nc
-                    else:
-                        if 1 <= field[r][c] <= 4: #블록
-                            result += 1
-                            cur_d, move_flag = next_d[cur_d][field[r][c] - 1]
-                        elif 6 <= field[r][c] <= 10:
-                            warm_loc = warm_hall[field[r][c]]
-                            for wr, wc in warm_loc:
-                                if (wr, wc) != (r, c):
-                                    nnr, nnc = wr, wc
-                            r, c = nnr, nnc
-                        else:
-                            pass
-                if 6 <= field[nr][nc] <= 10:
-                    warm_loc = warm_hall[field[nr][nc]]
-                    for wr, wc in warm_loc:
-                        if (wr, wc) != (nr, nc):
-                            nnr, nnc = wr, wc
-                    r, c = nnr, nnc
-                if field[nr][nc] == -1:
-                    return result
-        if (r, c) == (sr, sc):
+            r, c = nr, nc
+            continue
+        if field[nr][nc] == -1:
             return result
-    return result
+        if not field[nr][nc]: # 빈칸일 때
+            r, c = nr, nc
+        elif 1 <= field[nr][nc] <= 5: #블록
+            result += 1
+            cur_d = next_d[cur_d][field[nr][nc] - 1]
+            r, c = nr, nc
+        if 6 <= field[nr][nc] <= 10:
+            warm_loc = warm_hall[field[nr][nc]]
+            for wr, wc in warm_loc:
+                if (wr, wc) != (nr, nc):
+                    nnr, nnc = wr, wc
+            r, c = nnr, nnc
+
 
 for test_case in range(1, T + 1):
     warm_hall = defaultdict(list)
@@ -111,6 +87,5 @@ for test_case in range(1, T + 1):
             if not field[sr][sc]:
                 for d in range(4):
                     result = simulation(sr,sc,d)
-                    #print(sr, sc, d, result)
                     answer = max(result, answer)
     print('#{} {}'.format(test_case, answer))
