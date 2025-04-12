@@ -55,7 +55,7 @@ for i in range(5):
         for idx, row in enumerate(tmp):
             field_mountain[M+idx][M:2*M] = row
 r_diff, c_diff = m_exit_r - m_field_sr, m_exit_c - m_field_sc
-m_er, m_ec = m_sr + r_diff, m_sc + c_diff
+m_er, m_ec = M + r_diff, M + c_diff
 if m_er >= 2*M:
     m_er = 3*M - 1
 elif m_er < M:
