@@ -43,7 +43,7 @@ def move_knight(i, d):
                         pushed.append(field_knight[nr][nc])
         if not nxt_pushed:
             return [i] + list(set(pushed))
-        prev_pushed = nxt_pushed[:]
+        prev_pushed = list(set(nxt_pushed))[:]
 
 command = []
 for _ in range(Q):
@@ -55,7 +55,7 @@ for i, d in command:
         if not move_list : continue
         new_knight_field = [[0]*L for _ in range(L)]
         for idx, k_info in enumerate(kngiht):
-            if idx == 0 : continue
+            if idx == 0 or not alive[idx] : continue
             kr, kc, kh, kw, k = k_info
             if idx in move_list:
                 cnt = 0
