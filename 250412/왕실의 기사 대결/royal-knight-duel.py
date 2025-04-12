@@ -18,19 +18,19 @@ for n in range(1, N+1):
 dir = [(-1,0),(0,1),(1,0),(0,-1)]
 def move_knight(i, d):
     kr, kc, kh, kw, k = kngiht[i]
-    pushed = set()
+    pushed = []
     for r in range(kr, kr + kh):
         for c in range(kc, kc + kw):
             nr, nc = r + dir[d][0], c + dir[d][1]
             if 0 > nr or L <= nr or 0 > nc or L <= nc : return []
             if field[nr][nc] == 2 : return []
             if field_knight[nr][nc] and field_knight[nr][nc] != field_knight[r][c]:
-                pushed.add(field_knight[nr][nc])
+                pushed.append(field_knight[nr][nc])
     if not pushed:
         return [i]
-    prev_pushed = pushed
+    prev_pushed = list(set(pushed))[:]
     while True:
-        nxt_pushed = set()
+        nxt_pushed = []
         for n in prev_pushed:
             kr, kc, kh, kw, k = kngiht[n]
             for r in range(kr, kr + kh):
@@ -39,11 +39,11 @@ def move_knight(i, d):
                     if 0 > nr or L <= nr or 0 > nc or L <= nc : return []
                     if field[nr][nc] == 2 : return []
                     if field_knight[nr][nc] and field_knight[nr][nc] != field_knight[r][c]:
-                        nxt_pushed.add(field_knight[nr][nc])
-                        pushed.add(field_knight[nr][nc])
+                        nxt_pushed.append(field_knight[nr][nc])
+                        pushed.append(field_knight[nr][nc])
         if not nxt_pushed:
-            return [i] + list(pushed)
-        prev_pushed = nxt_pushed
+            return [i] + list(set(pushed))
+        prev_pushed = nxt_pushed[:]
 
 command = []
 for _ in range(Q):
