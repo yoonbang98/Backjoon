@@ -1,4 +1,4 @@
-from collections import deque
+import heapq
 def solution(n, edge):
     answer = 0
     graph = [[] for _ in range(n+1)]
@@ -6,16 +6,16 @@ def solution(n, edge):
         graph[src].append(dst)
         graph[dst].append(src)
     dist = [-1]*(n+1)
+    heap = [[1, 0]]
     dist[1] = 0
-    queue = deque()
-    queue.append([1, 0])
-    while queue:
-        cur, d = queue.popleft()
-        for nei in graph[cur]:
-            if dist[nei] == -1:
-                dist[nei] = d + 1
-                queue.append([nei, d+1])
-            # elif dist[nei] > d + 1:
-            #     dist[nei] = d + 1
-            #     queue.append([nei, d+1])
-    return dist.count(max(dist))
+    while heap:
+        cur_node, cur_dist = heapq.heappop(heap)
+        for nei in graph[cur_node]:
+            if dist[nei] == -1 or dist[nei] > dist[cur_node] + 1:
+                heapq.heappush(heap, [nei, cur_dist + 1])
+                dist[nei] = dist[cur_node] + 1
+    max_num = max(dist)
+    for i, num in enumerate(dist):
+        if i > 0 and max_num == num:
+            answer += 1
+    return answer
