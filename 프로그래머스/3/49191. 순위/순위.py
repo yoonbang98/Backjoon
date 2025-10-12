@@ -1,20 +1,23 @@
+from collections import deque
+from math import inf
 def solution(n, results):
     answer = 0
-    board = [[0]*n for _ in range(n)]
-    
-    for a,b in results:
-        board[a-1][b-1] = 1
-        board[b-1][a-1] = -1
-        
-    for k in range(n):
-        for i in range(n):
-            for j in range(n):
-                if i == j or board[i][j] != 0 :
+    graph = [[0]*(n+1) for _ in range(n+1)]
+    for src, dst in results:
+        graph[dst][src] = 1
+        graph[src][dst] = -1
+
+    for k in range(1, n+1):
+        for i in range(1, n+1):
+            for j in range(1, n+1):
+                if i == j or graph[i][j]:
                     continue
-                if board[i][k] == board[k][j] == 1:
-                    board[i][j] = 1
-                    board[j][i] = -1
-    for row in board:
-        if row.count(0) == 1:
-            answer += 1
+                if graph[i][k] == graph[k][j] == 1:
+                    graph[i][j] = 1
+                    graph[j][i] = -1
+    for idx, row in enumerate(graph):
+        if idx > 0:
+            if row[1:].count(0) == 1:
+                answer += 1
+
     return answer
