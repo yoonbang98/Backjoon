@@ -1,24 +1,24 @@
 from collections import defaultdict
-import copy
-def dfs(start, remain_tickets, edge_dict, route):
-    global answer
-    if answer :
+total_route = []
+def dfs(cur, route, ticket_dict, graph, n):
+    global total_route
+    if len(route) == n + 1:
+        total_route.append(route)
         return
-    if not remain_tickets: 
-        answer = route
-    for nei in edge_dict[start]:
-        if [start, nei] in remain_tickets:
-            tickets_copy = copy.deepcopy(remain_tickets)
-            tickets_copy.remove([start, nei])
-            dfs(nei, tickets_copy, edge_dict, route + [nei])
-
-answer = []
+    for nei in graph[cur]:  
+        if ticket_dict[cur+nei]:
+            ticket_dict[cur+nei] -= 1
+            dfs(nei, route + [nei], ticket_dict, graph, n)
+            ticket_dict[cur+nei] += 1
+    return
 def solution(tickets):
-    edge_dict = defaultdict(list)
+    n = len(tickets)
+    graph = defaultdict(list)
+    ticket_dict = defaultdict(int)
     for src, dst in tickets:
-        edge_dict[src].append(dst)
-    for key, value in edge_dict.items():
-        value.sort()
-    dfs("ICN", tickets, edge_dict, ["ICN"])
-    
-    return answer
+        graph[src].append(dst)
+        ticket_dict[src+dst] += 1
+        
+    dfs("ICN", ['ICN'],ticket_dict, graph, n)
+    total_route.sort()
+    return total_route[0]
