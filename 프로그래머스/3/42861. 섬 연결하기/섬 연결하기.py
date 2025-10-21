@@ -1,21 +1,20 @@
-def find_parent(parent, x):
-    if parent[x] != x:
-        parent[x] = find_parent(parent, parent[x])
+def find_parent(x, parent):
+    if x != parent[x]:
+        parent[x] = find_parent(parent[x], parent)
     return parent[x]
-def union_parent(parent, a,b):
-    a = find_parent(parent, a)
-    b = find_parent(parent, b)
-    if b < a :
-        parent[a] = b
-    else:
+def union_parent(a, b, parent):
+    a = find_parent(a, parent)
+    b = find_parent(b, parent)
+    if a < b:
         parent[b] = a
+    else:
+        parent[a] = b
 def solution(n, costs):
     parent = [i for i in range(n)]
-    sorted_cost = sorted(costs, key = lambda x : x[2])
-    
+    costs.sort(key = lambda x : x[2])
     answer = 0
-    for a, b, cost in sorted_cost:
-        if find_parent(parent, a) != find_parent(parent,b):
-            union_parent(parent, a,b)
+    for i, j, cost in costs:
+        if find_parent(i, parent) != find_parent(j, parent):
+            union_parent(i,j, parent)
             answer += cost
     return answer
