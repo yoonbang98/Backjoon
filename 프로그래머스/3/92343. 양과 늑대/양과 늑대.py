@@ -1,33 +1,32 @@
-    
+
+answer = 0
+def dfs(info, graph, visited, sheep, wolf, cur):
+    global answer
+    if sheep > answer:
+        answer = sheep
+    #print(cur, sheep ,wolf)
+    for i in range(len(info)):
+        if visited[i]:
+            for nei in graph[i]:
+                if not visited[nei]:
+                    if not info[nei]:
+                        visited[nei] = True
+                        dfs(info, graph, visited, sheep + 1 , wolf, nei)
+                        visited[nei] = False
+                    elif info[nei] and sheep > wolf + 1:
+                        visited[nei] = True
+                        dfs(info, graph, visited, sheep , wolf + 1, nei)
+                        visited[nei] = False
+    return
 def solution(info, edges):
-    answer = 1
     N = len(info)
     graph = [[] for _ in range(N)]
-
+    visited = [False]*(N)
     for src, dst in edges:
         graph[src].append(dst)
         graph[dst].append(src)
     
-    def dfs(sheep, visited, wolf):
-        nonlocal answer
-        if sheep <= wolf:
-            answer = max(answer, sheep)
-            return
-        answer = max(answer, sheep)
-        for n in range(N):
-            if visited[n]:
-                for nei in graph[n]:
-                    if not visited[nei] and info[nei]: #늑대
-                        visited[nei] = True
-                        dfs(sheep, visited, wolf + 1)
-                        visited[nei] = False
-                    elif not visited[nei] and not info[nei] : #양
-                        visited[nei] = True
-                        dfs(sheep + 1, visited, wolf)
-                        visited[nei] = False
-        return
-    visited = [False]*N
     visited[0] = True
-    dfs(1, visited, 0)
-    
+    dfs(info, graph, visited, 1, 0, 0)
+            
     return answer
