@@ -1,34 +1,34 @@
 from collections import defaultdict
+from itertools import combinations
 from bisect import bisect_left
-
 def solution(info, query):
     info_dict = defaultdict(list)
-    for i in info:
-        splited_info = i.split()
-        info_dict[splited_info[0] + splited_info[1] + splited_info[2] + splited_info[3]].append(int(splited_info[4]))
-        info_dict['-' + splited_info[1] + splited_info[2] + splited_info[3]].append(int(splited_info[4]))
-        info_dict[splited_info[0] + '-' + splited_info[2] + splited_info[3]].append(int(splited_info[4]))
-        info_dict[splited_info[0] + splited_info[1] + '-' + splited_info[3]].append(int(splited_info[4]))
-        info_dict[splited_info[0] + splited_info[1] + splited_info[2] + '-'].append(int(splited_info[4]))
-        info_dict['-'+ '-' + splited_info[2] + splited_info[3]].append(int(splited_info[4]))
-        info_dict['-' + splited_info[1] + '-' + splited_info[3]].append(int(splited_info[4]))
-        info_dict['-' + splited_info[1] + splited_info[2] + '-'].append(int(splited_info[4]))
-        info_dict[splited_info[0] + '-' + '-' + splited_info[3]].append(int(splited_info[4]))
-        info_dict[splited_info[0] + '-' + splited_info[2] + '-'].append(int(splited_info[4]))
-        info_dict[splited_info[0] + splited_info[1] + '-' + '-'].append(int(splited_info[4]))
-        info_dict['-' + '-' + '-' + splited_info[3]].append(int(splited_info[4]))
-        info_dict['-' + '-' + splited_info[2] + '-'].append(int(splited_info[4]))
-        info_dict['-' + splited_info[1] + '-'  + '-'].append(int(splited_info[4]))
-        info_dict[splited_info[0] + '-' + '-' + '-'].append(int(splited_info[4]))
-        info_dict['-'+ '-' + '-' + '-'].append(int(splited_info[4]))
+    for information in info:
+        score = int(information.split()[-1])
+        key_list = information.split()[:-1]
+        info_dict[''].append(score)
+        for num in range(1, 5):
+            for com in combinations(key_list, num):
+                tmp = ''
+                for c in com:
+                    tmp += c
+                info_dict[tmp].append(score)
     for key, value in info_dict.items():
-        info_dict[key] = sorted(value)
-
+        value.sort()
     answer = []
     for q in query:
-        lang, job, ex, ss = q.split(' and ')
-        soul, score = ss.split()
-        key = lang + job + ex + soul                              
-        result = len(info_dict[key]) - bisect_left(info_dict[key], int(score))
-        answer.append(result)
+        key = ''
+        score = -1
+        for word in q.split():
+            if word == 'and' or word == '-' : continue
+            if word.isdigit(): 
+                score = int(word)
+                continue
+            key += word
+        s_list = info_dict[key]
+
+        if score != -1:
+            answer.append(len(s_list) - bisect_left(s_list, score))
+        else:
+            answer.append(len(s_list))  
     return answer
