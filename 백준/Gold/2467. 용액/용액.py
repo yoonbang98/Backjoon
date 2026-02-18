@@ -1,18 +1,26 @@
+import sys
 from math import inf
-N = int(input())
-feature = list(map(int, input().split()))
+
+N = int(sys.stdin.readline())
+num_list = list(map(int, sys.stdin.readline().split()))
+left, right = 0, N-1
 
 answer = inf
-left = 0
-right = N-1
-answer_list = [feature[left], feature[right]]
+left_a, right_a = num_list[left], num_list[right]
+
 while left < right:
-    result = feature[left] + feature[right]
-    if answer > abs(result): #작아지면
-        answer = abs(result)
-        answer_list = [feature[left], feature[right]]
-    if result > 0:
+    val = num_list[left] + num_list[right]
+    if val < 0:
+        if answer > abs(val):
+            answer = abs(val)
+            left_a, right_a = num_list[left], num_list[right]
+        left += 1
+    elif val > 0 :
+        if answer > abs(val):
+            answer = abs(val)
+            left_a, right_a = num_list[left], num_list[right]
         right -= 1
     else:
-        left += 1
-print(*answer_list)
+        left_a, right_a = num_list[left], num_list[right]
+        break
+print(left_a, right_a)
