@@ -1,35 +1,33 @@
 import math
-N = int(input())
-primes = [True for i in range(N+1)]
+import sys
 
-for i in range(2, int(math.sqrt(N))+1):
-    if primes[i] == True:
-        j = 2
-        while i*j <= N:
-            primes[i*j] = False
-            j += 1
+n = int(sys.stdin.readline())
+array = [True for i in range(n + 1)]
 
-prime_list = []
+# 에라토스테네스의 체 알고리즘
+for i in range(2, int(math.sqrt(n)) + 1): # 2부터 n의 제곱근까지의 모든 수를 확인
+	if array[i] == True:	# i가 소수인 경우
+    	# i를 제외한 i의 모든 배수를 지우기
+		j = 2
+		while i * j <= n:
+			array[i * j] = False
+			j += 1
 
-for i in range(2, N+1):
-    if primes[i]:
-        prime_list.append(i)
-
-M = len(prime_list)
-start, end = 0, 0
-answer = 0
-if not M :
-    print(answer)
-else:
-    sum_tmp = prime_list[0]
-    while start <= end:
-        if sum_tmp <= N:
-            if sum_tmp == N :
-                answer += 1
-            end += 1
-            if end == M : break
-            sum_tmp += prime_list[end]
-        else :
-            sum_tmp -= prime_list[start]
-            start += 1
-    print(answer)
+#모든 소수 출력
+prime = []
+for i in range(2, n + 1):
+	if array[i]:
+		prime.append(i)
+start, end, total, answer = 0, 0, 0, 0
+while True:
+	if total >= n :
+		total -= prime[start]
+		start += 1
+	elif end == len(prime):
+		break
+	else :
+		total += prime[end]
+		end += 1
+	if total == n:
+		answer += 1
+print(answer)
