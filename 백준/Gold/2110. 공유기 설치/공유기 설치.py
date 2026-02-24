@@ -1,26 +1,29 @@
 import sys
-input = sys.stdin.readline
-
-N, C = map(int, input().split())
+N, C = map(int, sys.stdin.readline().split())
 house = []
 for _ in range(N):
-    house.append(int(input()))
+    house.append(int(sys.stdin.readline()))
 house.sort()
 
-left, right = 1, house[-1]
-answer= 0
-while left <= right:
-    mid = (left+right)//2
-    cnt = 1 #설치해야하는 공유기 수
-    cur = house[0]
+answer = 0
+def binary_search(data,C):
+    start = 1
+    end = data[-1] - data[0]
+    global answer
+    while start <= end:
+        mid = (start + end) // 2
+        current = data[0]
+        cnt = 1
 
-    for i in range(1, len(house)):
-        if house[i] >= cur + mid:
-            cur = house[i]
-            cnt += 1
-    if cnt >= C: #공유기 많음 -> 거리 증가
-        answer = mid
-        left = mid + 1
-    else:
-        right = mid -1
+        for i in range(1, len(data)):
+            if data[i] >= current + mid:
+                cnt += 1
+                current = data[i]
+
+        if cnt >= C:
+            start = mid + 1
+            answer = mid
+        else:
+            end = mid - 1
+binary_search(house,C)
 print(answer)
